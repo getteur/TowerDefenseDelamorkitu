@@ -7,8 +7,10 @@ import java.util.List;
  */
 public enum ItemType {
 
-    Entry,
+  Entry,
   Exit,
+  Blank,
+  MapLimit,
   Tower,
   Unit;
 }
