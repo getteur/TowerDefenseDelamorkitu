@@ -16,11 +16,7 @@ import java.util.Queue;
  */
 public class AlgoManager {
 
-    private Map<Item, Boolean> visited = new HashMap<Item, Boolean>();
-
-    private Map<Item, Item> previous = new HashMap<Item, Item>();
-
-    public static void updateItemList(Item[][] map, List<Item> items){
+    public static void updateItemList(Item[][] itemsMap, List<Item> items){
         //update the item List
         if(items == null || items.size() < 1){
             return;
@@ -34,7 +30,8 @@ public class AlgoManager {
             if(!hasToMoveItem(item)){
                 continue;
             }
-            // Find the best way to the exit.
+            // Find the best path to the exit and update position.
+            updateDirection(item, exit, itemsMap);
         }
     }
 
@@ -63,8 +60,10 @@ public class AlgoManager {
         throw new IllegalStateException("No exit for the enemies !");
     }
 
+    private static void updateDirection(Item start, Item finish, Item[][] itemsMap){
+        Map<Item, Boolean> visited = new HashMap<Item, Boolean>();
+        Map<Item, Item> previous = new HashMap<Item, Item>();
 
-    public List getDirections(Item start, Item finish, Item[][] itemsMap){
         List<Item> directions = new LinkedList<Item>();
         Queue<Item> q = new LinkedList<Item>();
         Item current = start;
@@ -92,10 +91,13 @@ public class AlgoManager {
         }
 
         Collections.reverse(directions);
-        return directions;
+
+        Item nextPosition = directions.get(1);
+        start.setDestX(nextPosition.getX());
+        start.setDestY(nextPosition.getY());
     }
 
-    private List<Item> getNeighbors(Item item, Item[][] itemsMap) {
+    private static List<Item> getNeighbors(Item item, Item[][] itemsMap) {
         List<Item> neighbors = new LinkedList<Item>();
         int x = item.getX();
         int y = item.getY();
@@ -126,7 +128,7 @@ public class AlgoManager {
     /**
      * Indique s'il le voisin est un espace vide, sur lequel l'item peut aller.
      */
-    private boolean isValidNeighbor(Item item){
+    private static boolean isValidNeighbor(Item item){
         if(ItemType.Blank.equals(item.getType())){
             return true;
         }
